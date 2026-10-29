@@ -150,7 +150,7 @@ def issue_body(date, meta, png_url):
 ```
 
 ### 3. 게시
-16:00(KST)에 자동 게시되고 이 Issue는 닫혀요. 오늘 올리지 않으려면 `posts/{date}.png` 를 삭제하세요.
+{meta.get('publish_after', '16:00')}(KST)에 자동 게시되고 이 Issue는 닫혀요. 오늘 올리지 않으려면 `posts/{date}.png` 를 삭제하세요.
 """
 
 
@@ -195,6 +195,11 @@ def main():
         'date': date, 'lines': lines, 'source': source, 'style': style,
         'caption': '\n'.join(lines) + '\n\n— ' + source, 'letter_url': url,
     }
+    publish_after = (os.environ.get('PUBLISH_AFTER') or '').strip()
+    if publish_after:
+        if not re.fullmatch(r'\d{2}:\d{2}', publish_after):
+            sys.exit(f'publish_after 형식이 잘못됨: {publish_after!r} (예: 17:00)')
+        meta['publish_after'] = publish_after
     meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     state.update(lastStyle=style, lastDate=date)
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

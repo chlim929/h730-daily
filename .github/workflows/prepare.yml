@@ -15,6 +15,9 @@ on:
         description: '이미 만든 날짜도 다시 만들기'
         type: boolean
         default: false
+      publish_after:
+        description: '게시 시각 늦추기 (예: 17:00, 비우면 16:00)'
+        required: false
 
 permissions:
   contents: write
@@ -45,5 +48,6 @@ jobs:
           DATE: ${{ inputs.date }}
           LETTER: ${{ inputs.letter }}
           FORCE: ${{ inputs.force }}
+          PUBLISH_AFTER: ${{ inputs.publish_after }}
           H730_ARCHIVE_URL: ${{ vars.H730_ARCHIVE_URL }}
           GH_TOKEN: ${{ github.token }}

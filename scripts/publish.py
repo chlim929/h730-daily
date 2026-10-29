@@ -10,13 +10,14 @@ import json
 import os
 import sys
 import time
+from datetime import datetime
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from PIL import Image, ImageOps
 
-from common import (DONE, POSTS, REPO, find_issue, git_commit_push, head_sha, raw_url, run,
+from common import (DONE, KST, POSTS, REPO, find_issue, git_commit_push, head_sha, raw_url, run,
                     target_date)
 
 GRAPH = 'https://graph.instagram.com'
@@ -97,6 +98,12 @@ def main():
         return
     meta = json.loads(meta_path.read_text(encoding='utf-8')) if meta_path.exists() else {}
     caption = meta.get('caption', '')
+    # json의 "publish_after": "17:00" — 예약 실행은 그 시각 전이면 건너뛴다 (수동 실행은 무시)
+    after = meta.get('publish_after')
+    if after and os.environ.get('GITHUB_EVENT_NAME') == 'schedule':
+        if datetime.now(KST) < datetime.fromisoformat(f'{date}T{after}').replace(tzinfo=KST):
+            print(f'{date}: {after} 이후 게시로 지정됨 — 이번 실행은 건너뜀')
+            return
     to_jpeg(png, jpg)
 
     if args.dry_run:

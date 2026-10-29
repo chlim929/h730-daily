@@ -3,6 +3,7 @@ name: publish
 on:
   schedule:
     - cron: '0 7 * * *'  # 매일 16:00 KST
+    - cron: '0 8 * * *'  # 17:00 KST — json에 publish_after 를 늦춘 날을 위한 두 번째 실행
   workflow_dispatch:
     inputs:
       date:
