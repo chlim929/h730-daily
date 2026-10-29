@@ -1,0 +1,44 @@
+name: publish
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # 매일 16:00 KST
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '날짜 (YYYY-MM-DD, 비우면 오늘)'
+        required: false
+      dry_run:
+        description: 'JPEG 변환만 하고 커밋·게시는 안 함'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: posts
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        run: pip install pillow==11.3.0
+      - name: Publish
+        working-directory: scripts
+        run: python publish.py
+        env:
+          DATE: ${{ inputs.date }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+          GH_TOKEN: ${{ github.token }}

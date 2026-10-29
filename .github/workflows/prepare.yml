@@ -1,0 +1,49 @@
+name: prepare
+
+on:
+  schedule:
+    - cron: '45 22 * * *'  # 매일 07:45 KST
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '날짜 (YYYY-MM-DD, 비우면 오늘)'
+        required: false
+      letter:
+        description: '레터 URL을 직접 지정 (비우면 아카이브에서 찾기)'
+        required: false
+      force:
+        description: '이미 만든 날짜도 다시 만들기'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: posts
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: Make card
+        working-directory: scripts
+        run: python prepare.py
+        env:
+          DATE: ${{ inputs.date }}
+          LETTER: ${{ inputs.letter }}
+          FORCE: ${{ inputs.force }}
+          H730_ARCHIVE_URL: ${{ vars.H730_ARCHIVE_URL }}
+          GH_TOKEN: ${{ github.token }}
