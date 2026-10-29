@@ -20,6 +20,7 @@ GitHub 예약 실행은 몇 분~수십 분 늦게 시작될 수 있어요.
 - `IG_USER_ID`
 - `IG_ACCESS_TOKEN` (장기 토큰, `IGAA…`)
 - `IG_APP_SECRET`
+- `ANTHROPIC_API_KEY` — 캡션의 주제 해시태그 1개를 칼럼 본문에서 고를 때 씀 (없으면 고정 태그만 들어감)
 
 ### 3. 토큰 갱신용 `GH_PAT` 만들기
 1. 프로필 사진 → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
@@ -44,6 +45,29 @@ GitHub 예약 실행은 몇 분~수십 분 늦게 시작될 수 있어요.
 - `일력_2026-10-29.png` → 이름을 `2026-10-29.png` 로 바꿔서 **posts 폴더 → Add file → Upload files** (덮어쓰기)
 - 캡션 수정: Issue의 **json 편집** 링크 → `"caption"` 값 수정 → Commit
 - 그날 올리지 않으려면 `posts/날짜.png` 삭제
+
+## 캡션
+자동으로 만들어지는 캡션 형식:
+```
+[오늘의 문장] 2026년 10월 29일 목요일
+
+오늘은 이 문장을 곱씹어 읽어보세요.
+
+____________________
+
+🖋 (한겨레 칼럼 제목) [칼럼명]
+
+👉🏻 칼럼 더 읽기
+(레터 출처 칸의 칼럼 링크)
+
+📨 더 많은 칼럼은 H:730 뉴스레터에서
+https://page.stibee.com/subscriptions/70653
+
+#칼럼 #필사 #오늘의문장 #뉴스레터 #(칼럼 핵심 키워드 1개)
+```
+- 마지막 키워드는 Claude API(`claude-opus-5-5`)가 칼럼 본문을 읽고 골라요. 실패하면 빠지니 검토 때 확인하세요.
+- 캡션은 게시 순간의 `posts/날짜.json` → `"caption"` 값으로 올라가요. 게시 전까지 언제든 고칠 수 있어요.
+- `"publish_after": "17:00"` 을 넣으면 그날은 17:00 예약 실행에서 게시돼요 (prepare 수동 실행의 `publish_after` 입력과 같음).
 
 ## 참고
 - 아카이브 주소가 바뀌면: **Settings → Secrets and variables → Actions → Variables → New repository variable** `H730_ARCHIVE_URL`
