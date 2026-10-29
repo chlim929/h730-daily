@@ -65,7 +65,12 @@ def wait_until_public(url, timeout=180):
 
 
 def post_to_instagram(image_url, caption):
-    uid = os.environ['IG_USER_ID']
+    # 계정 ID는 토큰에서 직접 확인한다 (Secret의 IG_USER_ID와 다르면 토큰 쪽을 쓴다)
+    me = ig('GET', 'me', fields='user_id,username')
+    uid = str(me.get('user_id') or os.environ['IG_USER_ID'])
+    print(f'인스타 계정: @{me.get("username")}')
+    if os.environ.get('IG_USER_ID') and uid != os.environ['IG_USER_ID']:
+        print('⚠ Secret IG_USER_ID 와 토큰의 계정 ID가 달라서 토큰 기준으로 게시함')
     container = ig('POST', f'{uid}/media', image_url=image_url, caption=caption)['id']
     for _ in range(60):
         status = ig('GET', container, fields='status_code,status')
