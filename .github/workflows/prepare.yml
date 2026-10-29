@@ -23,6 +23,10 @@ on:
         type: choice
         options: [auto, box, line]
         default: auto
+      dry_run:
+        description: '테스트: 커밋·Issue 없이 카드만 만들어 실행 결과(Artifacts)로 받기'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -49,13 +53,14 @@ jobs:
       # 제작기의 PNG 저장은 시스템에 설치된 폰트로 그린다
       - name: Install card fonts
         run: |
-          mkdir -p ~/.local/share/fonts
+          mkdir -p ~/.local/share/fonts ~/.config/fontconfig
           cp fonts/*.ttf ~/.local/share/fonts/
+          cp fonts/fonts.conf ~/.config/fontconfig/fonts.conf
           fc-cache -f
-          fc-list | grep -E 'Gowun Dodum|Abril Fatface'
+          fc-list : family weight | grep -E 'Gowun Dodum|Abril Fatface'
       - name: Make card
         working-directory: scripts
-        run: python prepare.py
+        run: python prepare.py ${{ inputs.dry_run && '--no-push' || '' }}
         env:
           DATE: ${{ inputs.date }}
           LETTER: ${{ inputs.letter }}
@@ -65,3 +70,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           H730_ARCHIVE_URL: ${{ vars.H730_ARCHIVE_URL }}
           GH_TOKEN: ${{ github.token }}
+      - name: Upload test card
+        if: inputs.dry_run
+        uses: actions/upload-artifact@v4
+        with:
+          name: card
+          path: posts/*.*
+          if-no-files-found: ignore
