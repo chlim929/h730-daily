@@ -184,7 +184,10 @@ def main():
                      + json.dumps(res['cells'], ensure_ascii=False, indent=1)[:3000])
 
         state = json.loads(STATE.read_text(encoding='utf-8')) if STATE.exists() else {}
-        style = 'box' if state.get('lastStyle') == 'line' else 'line'
+        if state.get('lastDate') == date:  # 같은 날짜를 다시 만들 땐 스타일 유지
+            style = state['lastStyle']
+        else:
+            style = 'box' if state.get('lastStyle') == 'line' else 'line'
         print(f'{date}: {url}\n  문장: {lines}\n  출처: {source}\n  스타일: {style}')
 
         POSTS.mkdir(exist_ok=True)

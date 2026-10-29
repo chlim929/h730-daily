@@ -41,6 +41,13 @@ jobs:
         run: |
           pip install -r requirements.txt
           python -m playwright install --with-deps chromium
+      # 제작기의 PNG 저장은 시스템에 설치된 폰트로 그린다
+      - name: Install card fonts
+        run: |
+          mkdir -p ~/.local/share/fonts
+          cp fonts/*.ttf ~/.local/share/fonts/
+          fc-cache -f
+          fc-list | grep -E 'Gowun Dodum|Abril Fatface'
       - name: Make card
         working-directory: scripts
         run: python prepare.py
