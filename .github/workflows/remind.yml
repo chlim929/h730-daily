@@ -1,0 +1,30 @@
+name: remind
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 매일 15:00 KST — 게시 1시간 전
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '날짜 (YYYY-MM-DD, 비우면 오늘)'
+        required: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Remind
+        working-directory: scripts
+        run: python remind.py
+        env:
+          DATE: ${{ inputs.date }}
+          GH_TOKEN: ${{ github.token }}
