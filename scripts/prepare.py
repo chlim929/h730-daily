@@ -184,7 +184,11 @@ def main():
                      + json.dumps(res['cells'], ensure_ascii=False, indent=1)[:3000])
 
         state = json.loads(STATE.read_text(encoding='utf-8')) if STATE.exists() else {}
-        if state.get('lastDate') == date:  # 같은 날짜를 다시 만들 땐 스타일 유지
+        style = (os.environ.get('STYLE') or '').strip().replace('auto', '')
+        if style:
+            if style not in STYLE_NAMES:
+                sys.exit(f'style 은 line 또는 box: {style!r}')
+        elif state.get('lastDate') == date:  # 같은 날짜를 다시 만들 땐 스타일 유지
             style = state['lastStyle']
         else:
             style = 'box' if state.get('lastStyle') == 'line' else 'line'

@@ -18,6 +18,11 @@ on:
       publish_after:
         description: '게시 시각 늦추기 (예: 17:00, 비우면 16:00)'
         required: false
+      style:
+        description: '스타일 (auto = 번갈아, box = 상자형, line = 물결밑줄형)'
+        type: choice
+        options: [auto, box, line]
+        default: auto
 
 permissions:
   contents: write
@@ -56,5 +61,6 @@ jobs:
           LETTER: ${{ inputs.letter }}
           FORCE: ${{ inputs.force }}
           PUBLISH_AFTER: ${{ inputs.publish_after }}
+          STYLE: ${{ inputs.style }}
           H730_ARCHIVE_URL: ${{ vars.H730_ARCHIVE_URL }}
           GH_TOKEN: ${{ github.token }}
