@@ -2,8 +2,9 @@
 
 | 시간(KST) | 워크플로 | 하는 일 |
 |---|---|---|
-| 07:45 | `prepare` | 오늘 H:730 레터에서 문장·출처 추출 → 카드 PNG → `posts/` 커밋 → 검토 Issue 생성 |
+| 07:45 | `prepare` | 오늘 H:730 레터에서 문장·출처 추출 → 카드 PNG → `posts/` 커밋 → 검토 Issue 생성 (이미지·캡션 포함, @멘션 알림) |
 | 09:30 | (나) | Issue의 검토 링크로 수정 → `posts/날짜.png` 덮어쓰기, 캡션은 `posts/날짜.json` 편집 |
+| 15:00 | `remind` | 그 시점의 최신 이미지·캡션을 Issue 댓글로 다시 알림 |
 | 16:00 | `publish` | PNG → JPEG(1080×1350) → 인스타 게시 → `posts/done/` 이동 → Issue 닫기 |
 | 월 09:00 | `refresh-token` | 인스타 장기 토큰 갱신 → Secret `IG_ACCESS_TOKEN` 교체 |
 

@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 
 from playwright.sync_api import sync_playwright
 
-from common import (PAGES_MAKER, POSTS, REPO, ROOT, STATE, find_issue, git_commit_push,
+from common import (OWNER, PAGES_MAKER, POSTS, REPO, ROOT, STATE, find_issue, git_commit_push,
                     head_sha, issue_title, raw_url, run, set_output, target_date)
 
 ARCHIVE_URL = os.environ.get('H730_ARCHIVE_URL') or 'https://page.stibee.com/archives/70653'
@@ -199,7 +199,9 @@ def issue_body(date, meta, png_url):
     review = PAGES_MAKER + '?' + urlencode(params)
     quote = '\n'.join(f'> {line}' for line in meta['lines'])
     repo = f'https://github.com/{REPO}'
-    return f"""![{date} 일력]({png_url})
+    return f"""@{OWNER} 오늘 카드가 준비됐어요. **{meta.get('publish_after', '16:00')}(KST)** 게시 예정이에요.
+
+![{date} 일력]({png_url})
 
 {quote}
 >
