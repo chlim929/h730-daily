@@ -1,0 +1,40 @@
+name: wait-publish
+
+# prepare 가 끝나면 시작해 게시 시각까지 기다렸다가 publish 를 실행한다
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '날짜 (YYYY-MM-DD)'
+        required: true
+      reminded:
+        description: '게시 전 알림을 이미 보냄'
+        type: boolean
+        default: false
+      dry_run:
+        description: '테스트: publish 도 dry_run 으로 실행'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+jobs:
+  wait:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Wait for publish time
+        working-directory: scripts
+        run: python wait_publish.py
+        env:
+          DATE: ${{ inputs.date }}
+          REMINDED: ${{ inputs.reminded }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          GH_TOKEN: ${{ github.token }}

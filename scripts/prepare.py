@@ -14,7 +14,7 @@ from urllib.parse import urlencode
 
 from playwright.sync_api import sync_playwright
 
-from common import (OWNER, PAGES_MAKER, POSTS, REPO, ROOT, STATE, find_issue, git_commit_push,
+from common import (DONE, OWNER, PAGES_MAKER, POSTS, REPO, ROOT, STATE, find_issue, git_commit_push,
                     head_sha, issue_title, raw_url, run, set_output, target_date)
 
 ARCHIVE_URL = os.environ.get('H730_ARCHIVE_URL') or 'https://page.stibee.com/archives/70653'
@@ -240,7 +240,7 @@ def main():
     date = target_date(args.date)
     png, meta_path = POSTS / f'{date}.png', POSTS / f'{date}.json'
     set_output(date=date, made='false')
-    if meta_path.exists() and not args.force:
+    if (meta_path.exists() or (DONE / meta_path.name).exists()) and not args.force:
         print(f'{date}: 이미 만들어져 있음 (다시 만들려면 force)')
         return
 

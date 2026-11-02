@@ -1,8 +1,7 @@
 name: remind
 
+# 평소 알림은 wait-publish 가 게시 1시간 전에 보낸다. 이건 수동으로 다시 보낼 때 쓴다.
 on:
-  schedule:
-    - cron: '0 6 * * *'  # 매일 15:00 KST — 게시 1시간 전
   workflow_dispatch:
     inputs:
       date:

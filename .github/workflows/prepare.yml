@@ -29,6 +29,7 @@ on:
         default: false
 
 permissions:
+  actions: write
   contents: write
   issues: write
 
@@ -59,6 +60,7 @@ jobs:
           fc-cache -f
           fc-list : family weight | grep -E 'Gowun Dodum|Abril Fatface'
       - name: Make card
+        id: card
         working-directory: scripts
         run: python prepare.py ${{ inputs.dry_run && '--no-push' || '' }}
         env:
@@ -69,6 +71,12 @@ jobs:
           STYLE: ${{ inputs.style }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           H730_ARCHIVE_URL: ${{ vars.H730_ARCHIVE_URL }}
+          GH_TOKEN: ${{ github.token }}
+      - name: Start publish timer
+        if: steps.card.outputs.made == 'true' && !inputs.dry_run
+        run: gh workflow run wait-publish.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME" -f date="$CARD_DATE"
+        env:
+          CARD_DATE: ${{ steps.card.outputs.date }}
           GH_TOKEN: ${{ github.token }}
       - name: Upload test card
         if: inputs.dry_run

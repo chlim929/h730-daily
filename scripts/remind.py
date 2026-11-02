@@ -10,12 +10,7 @@ import tempfile
 from common import OWNER, POSTS, REPO, find_issue, head_sha, raw_url, run, target_date
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--date')
-    args = ap.parse_args()
-
-    date = target_date(args.date)
+def send(date):
     png, meta_path = POSTS / f'{date}.png', POSTS / f'{date}.json'
     if not png.exists():
         print(f'{date}: posts/{date}.png 없음 — 알림 안 함')
@@ -44,6 +39,13 @@ def main():
     run('gh', 'issue', 'comment', str(issue), '--repo', REPO, '--body-file', f.name)
     os.unlink(f.name)
     print(f'{date}: Issue #{issue} 에 게시 전 알림을 남김')
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--date')
+    args = ap.parse_args()
+    send(target_date(args.date))
 
 
 if __name__ == '__main__':

@@ -101,6 +101,9 @@ def main():
     if not png.exists():
         print(f'{date}: posts/{date}.png 없음 — 종료')
         return
+    if (DONE / png.name).exists():
+        print(f'{date}: 이미 게시함 (posts/done) — 중복 게시 안 함')
+        return
     meta = json.loads(meta_path.read_text(encoding='utf-8')) if meta_path.exists() else {}
     caption = meta.get('caption', '')
     # json의 "publish_after": "17:00" — 예약 실행은 그 시각 전이면 건너뛴다 (수동 실행은 무시)
