@@ -39,7 +39,8 @@ concurrency:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    # Playwright 1.55 는 ubuntu-latest(26.04)에서 크롬을 설치하지 못한다
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
